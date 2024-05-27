@@ -1,0 +1,36 @@
+#EPS per log source by interval last 30 days
+SELECT LOGSOURCENAME(logsourceid) AS "Log Source", 
+SUM(eventcount) AS "Number of Events in Interval", 
+SUM(eventcount) / 2592000 AS "EPS in Interval" 
+FROM events GROUP BY "Log Source" 
+ORDER BY "EPS in Interval" 
+DESC LAST 30 days
+
+#EPS per log source by interval last 7 days
+SELECT LOGSOURCENAME(logsourceid) AS "Log Source", 
+SUM(eventcount) AS "Number of Events in Interval", 
+SUM(eventcount) / 604800 AS "EPS in Interval" 
+FROM events GROUP BY "Log Source" 
+ORDER BY "EPS in Interval" 
+DESC LAST 7 days 
+
+#EPS rates by log source
+SELECT logsourcename(logsourceid) 
+AS 'MY Log Sources', 
+SUM(eventcount) / (( MAX(endTime) -MIN(startTime) +1) / 1000 ) 
+AS EPS_Rates
+FROM events 
+GROUP BY logsourceid 
+ORDER BY EPS_Rates DESC 
+LAST 2 HOURS
+
+#Event counts and event types per day
+SELECT
+DATEFORMAT( devicetime, 'dd-MM-yyyy') 
+AS 'Date of log source',
+QIDDESCRIPTION(qid) 
+AS 'Description of event', COUNT(*)
+FROM events
+WHERE devicetime >( now() -(7*24*3600*1000) )
+GROUP BY "Date of log source", qid 
+LAST 1 DAYS
