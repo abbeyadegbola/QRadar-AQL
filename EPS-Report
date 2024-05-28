@@ -23,6 +23,15 @@ FROM events GROUP BY "Log Source"
 ORDER BY "EPS in Interval" 
 DESC LAST 7 days
 
+#EPS per log source type and events associated with offenses by interval last 7 days
+SELECT LOGSOURCETYPENAME(devicetype) AS "Log Source Type", 
+COUNT(hasoffense) AS "Total Events Associated with Offenses",
+SUM(eventcount) AS "Number of Events in Interval",
+SUM(eventcount) / 604800 AS "EPS in Interval"
+FROM events GROUP BY "Log Source Type"
+ORDER BY "EPS in Interval"
+DESC LAST 7 days
+
 #EPS rates by log source
 SELECT logsourcename(logsourceid) 
 AS 'MY Log Sources', 
