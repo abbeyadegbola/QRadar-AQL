@@ -2,4 +2,4 @@
 Group by "Event Name"
 Order by "Event Count"
 Filter by "Payload Matches Regular Expression" is any of (?i)\bdrop
-Filter by "Log Source" is Juniper IDPS
+Filter by "Log Source Group" is Juniper IDPS
