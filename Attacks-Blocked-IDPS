@@ -1,0 +1,5 @@
+#This uses the basic search feature in QRadar
+Group by "Event Name"
+Order by "Event Count"
+Filter by "Payload Matches Regular Expression" is any of (?i)\bdrop
+Filter by "Log Source" is Juniper IDPS
