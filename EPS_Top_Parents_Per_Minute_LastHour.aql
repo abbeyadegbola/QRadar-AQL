@@ -1,0 +1,31 @@
+-- --------------------------------------------------
+-- Purpose:
+--   Show per-minute EPS (Events per Second) trends
+--   for the busiest QRadar managed hosts (parents).
+--   Limited to the last 1 hour.
+--
+-- Key details:
+--   - logsourceid=65 → System Notification logs (QRadar metrics)
+--   - Parent field   → Console and Event Processors
+--   - Top 10 filter → keeps query portable for larger deployments
+--   - Output        → EPS per parent, bucketed by minute
+-- --------------------------------------------------
+
+SELECT starttime/(1000*60) as minute,
+DATEFORMAT(starttime,'YYYY MM dd HH:mm:ss') as showTime,
+(minute * (1000 * 60)) as 'tsTime',
+"Events per Second Raw - Peak 1 Sec" as EPS,parent as aParent
+from events
+where logsourceid=65 and aParent IN 
+(select aParent FROM
+(select parent as aParent,
+"Events per Second Raw - Peak 1 Sec" as EPS
+from events
+where parent <> NULL and logsourceid=65
+group by Parent
+order by EPS desc
+limit 10 
+last 1 hours))
+group by minute, parent
+order by minute ASC
+last 1 hours
