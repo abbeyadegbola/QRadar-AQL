@@ -1,0 +1,18 @@
+#To view the last login time to the console for each QRadar user 
+
+SELECT 
+"userName" AS 'Username', 
+DATEFORMAT(MAX(devicetime), 'yyyy-MM-dd HH:mm:ss') AS 'Last Login Time',
+UniqueCount("sourceIP") AS 'Source IP (Unique Count)', 
+SUM("eventCount") AS 'Total Login Events', 
+COUNT(*) AS 'Record Count' 
+FROM events 
+WHERE category='16001' 
+AND logSourceId='64' 
+AND qid='28250025' 
+AND "userName" IS NOT NULL 
+AND "userName" != 'root' 
+GROUP BY "userName" 
+ORDER BY "Last Login Time" DESC 
+LIMIT 1000 
+LAST 24 HOURS
