@@ -1,0 +1,14 @@
+#Maps specific Usernames to their originating /16 subnets. Designed to highlight anomalous "User + Subnet" pairings where the login frequency is low. 
+#Useful for detecting compromised credentials being used from non-standard network segments.
+
+SELECT 
+SUBSTRING(sourceip, 0, STRPOS(sourceip, '.', STRPOS(sourceip, '.') + 1)) AS "Subnet_Group", 
+username AS "User",
+COUNT(*) AS "Login_Attempts", 
+UNIQUECOUNT(sourceip) AS "Distinct_Source_IPs"
+FROM events 
+WHERE (logsourceid = 167 OR logsourceid = 169) 
+AND "Event ID" = '4624'  #qid can be used here as well
+GROUP BY "Subnet_Group", "User"
+ORDER BY "Login_Attempts" ASC 
+LAST 24 HOURS
