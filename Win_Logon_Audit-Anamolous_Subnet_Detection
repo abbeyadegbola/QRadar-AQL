@@ -1,0 +1,15 @@
+#Identifies low-frequency logon patterns by grouping Source IPs into /16 equivalents (first two octets). 
+#Specifically targets Windows Event ID 4624. 
+#The ASC sort highlights subnets with the lowest login volume, surfacing potential lateral movement or unauthorised access from unexpected network segments.
+
+SELECT 
+SUBSTRING(sourceip, 0, STRPOS(sourceip, '.', STRPOS(sourceip, '.') + 1)) AS "Subnet_Range", 
+COUNT(*) AS "Logon_Count", 
+UNIQUECOUNT(sourceip) AS "Unique_Endpoints",
+UNIQUECOUNT(username) AS "Unique_Users"
+FROM events 
+WHERE (logsourceid = 167 or logsourceid = 169)
+AND qid = 5000830
+GROUP BY "Subnet_Range" 
+ORDER BY "Logon_Count" ASC 
+LAST 24 HOURS
