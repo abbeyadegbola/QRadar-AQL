@@ -1,0 +1,16 @@
+#Detects RDP (Logon Type 10) sessions occurring outside of standard hours (6PM - 6AM)
+
+SELECT 
+    DATEFORMAT(devicetime, 'yyyy-MM-dd HH:mm:ss') AS "Logon Time", 
+    username AS "User", 
+    "SourceIP", 
+    "Logon Type",
+    "Event ID" 
+FROM events 
+WHERE 
+    (logsourceid = 168 OR logsourceid = 170) 
+    AND "Event ID" = 4624 
+    AND "Logon Type" = 10
+    AND DATEFORMAT(devicetime, 'H') IN ('18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5')
+ORDER BY "Logon Time" DESC 
+LAST 1 DAYS
