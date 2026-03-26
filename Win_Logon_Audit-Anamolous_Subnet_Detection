@@ -1,6 +1,6 @@
 #Identifies low-frequency logon patterns by grouping Source IPs into /16 equivalents (first two octets). 
 #Specifically targets Windows Event ID 4624. 
-#The ASC sort highlights subnets with the lowest login volume, surfacing potential lateral movement or unauthorised access from unexpected network segments.
+#The ASC sort highlights subnets with the lowest login volume, surfacing potential lateral movement or unauthorised access from unexpected network segments for any outlier.
 
 SELECT 
 SUBSTRING(sourceip, 0, STRPOS(sourceip, '.', STRPOS(sourceip, '.') + 1)) AS "Subnet_Range", 
