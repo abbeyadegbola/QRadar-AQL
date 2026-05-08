@@ -1,0 +1,11 @@
+#AQL query to extract CTD devices last seen timestamps and event counts from QRadar, grouped by CTD ID and sitename.
+SELECT
+    "CtdDeviceExternalId" AS CTD,
+    "CtdDeviceSite" AS Site,
+    DATEFORMAT(MAX(devicetime), 'yyyy-MM-dd HH:mm:ss') AS Last_Seen,
+    COUNT(*) AS Event_Count
+FROM events
+WHERE logsourceid = 115
+    AND "CtdDeviceExternalId" IS NOT NULL
+GROUP BY "CtdDeviceExternalId", "CtdDeviceSite"
+ORDER BY MAX(devicetime) ASC
