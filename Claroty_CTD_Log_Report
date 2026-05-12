@@ -9,3 +9,19 @@ WHERE logsourceid = 115
     AND "CtdDeviceExternalId" IS NOT NULL
 GROUP BY "CtdDeviceExternalId", "CtdDeviceSite"
 ORDER BY MAX(devicetime) ASC
+
+
+#AQL To check CTD devices not sending to QRadar for more than 7 days. Reference Map really insignificant
+SELECT
+    "CtdDeviceExternalId" AS CTD,
+    REFERENCEMAP('Claroty CTD Sites', "CtdDeviceExternalId") AS Site,
+    DATEFORMAT(MAX(devicetime), 'yyyy-MM-dd HH:mm:ss') AS Last_Seen,
+    ((NOW() - MAX(devicetime))/86400000) AS Days_Silent,
+    'Silent > 7 Days' AS Status
+FROM events
+WHERE logsourceid = 115
+    AND "CtdDeviceExternalId" IS NOT NULL
+GROUP BY "CtdDeviceExternalId"
+HAVING MAX(devicetime) < (NOW() - 604800000)
+ORDER BY MAX(devicetime) ASC
+Last 40 Days
