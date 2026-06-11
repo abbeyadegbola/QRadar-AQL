@@ -3,7 +3,8 @@
 SELECT 
     DATEFORMAT(devicetime, 'yyyy-MM-dd HH:mm:ss') AS "Logon Time", 
     username AS "User", 
-    "SourceIP", 
+    "SourceIP",
+    "DestinationIP",
     "Logon Type",
     "Event ID" 
 FROM events 
